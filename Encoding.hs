@@ -1,4 +1,7 @@
-module Encoding where
+module Encoding
+  ( encode
+  , Code
+  ) where
 
 import           Occurances (OccuranceTree (..))
 
@@ -13,17 +16,27 @@ instance Show Symbol where
 
 type Code = [Symbol]
 
-type Encoding a = [(Code, a)]
+type Cipher a = [(a, Code)]
 
 encode
-  :: (Eq a, Show a)
-  => [a] -> OccuranceTree a -> Encoding a
-encode _ = buildEncoding []
+  :: (Eq a)
+  => OccuranceTree a -> [a] -> Code
+encode tree = concatMap (translate cipher)
+  where
+    cipher = buildEncoding [] tree
 
-buildEncoding :: Code -> OccuranceTree a -> Encoding a
-buildEncoding code (Leaf element _) = [(code, element)]
+buildEncoding :: Code -> OccuranceTree a -> Cipher a
+buildEncoding code (Leaf element _) = [(element, code)]
 buildEncoding code (Vertex left right _) =
   buildEncoding leftCode left ++ buildEncoding rightCode right
   where
     leftCode = Zero : code
     rightCode = One : code
+
+translate
+  :: (Eq a)
+  => Cipher a -> a -> Code
+translate [] element = error "Can't decipher"
+translate ((encoded, code):xs) element
+  | encoded == element = code
+  | otherwise = translate xs element

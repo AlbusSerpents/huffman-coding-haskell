@@ -1,9 +1,8 @@
 module Main where
 
-import qualified Encoding   as E
-import qualified Occurances as O
+import           Lib
 
 main :: IO ()
 main = do
   input <- getLine
-  putStrLn $ concatMap show $ E.encode (O.buildOccurenceTree input) input
+  putStrLn $ concatMap show $ encode input

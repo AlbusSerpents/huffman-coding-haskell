@@ -3,15 +3,20 @@ module Encoding
   , decode
   ) where
 
-import           Occurances (OccuranceTree (..))
-import           Syntax     (Cipher, Code, Symbol (..), SyntaxTree (..))
+import           Control.Arrow (second)
+import           Occurances    (OccuranceTree (..))
+import           Syntax        (Cipher, Code, Symbol (..), SyntaxTree (..))
 
 encode
   :: (Eq a)
-  => OccuranceTree a -> [a] -> (Code, Cipher a)
-encode tree info = (code, cipher)
+  => [a] -> OccuranceTree a -> (Code, Cipher a)
+encode info (Leaf _ _) = (code, cipher)
   where
-    cipher = buildEncoding [] tree
+    code = replicate (length info) Zero
+    cipher = [(head info, [Zero])]
+encode info tree = (code, cipher)
+  where
+    cipher = map (second reverse) $ buildEncoding [] tree
     code = concatMap (translate cipher) info
 
 buildEncoding :: Code -> OccuranceTree a -> Cipher a

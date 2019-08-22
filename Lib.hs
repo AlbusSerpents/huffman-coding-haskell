@@ -3,14 +3,17 @@ module Lib
   , decode
   ) where
 
-import qualified Encoding   as E
-import qualified Occurances as O
-import qualified Syntax     as S
+import qualified Encoding   as E (decode, encode)
+import qualified Occurances as O (buildOccurenceTree)
+import qualified Syntax     as S (Cipher, Code)
+import qualified Translator as T (buildSynraxTree)
 
 encode
   :: (Eq a)
   => [a] -> (S.Code, S.Cipher a)
-encode input = E.encode (O.buildOccurenceTree input) input
+encode []    = ([], [])
+encode input = E.encode input $ O.buildOccurenceTree input
 
-decode :: S.Cipher a -> S.Code -> a
-decode = undefined
+decode :: S.Code -> S.Cipher a -> [a]
+decode []   = const []
+decode code = E.decode code . T.buildSynraxTree

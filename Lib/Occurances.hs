@@ -1,4 +1,4 @@
-module Occurances
+module Lib.Occurances
   ( buildOccurenceTree
   , OccuranceTree(..)
   ) where

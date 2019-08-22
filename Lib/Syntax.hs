@@ -1,4 +1,4 @@
-module Syntax
+module Lib.Syntax
   ( Symbol(..)
   , SyntaxTree(..)
   , Cipher

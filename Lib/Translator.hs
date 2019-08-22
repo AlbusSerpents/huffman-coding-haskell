@@ -1,10 +1,10 @@
-module Translator
+module Lib.Translator
   ( buildSynraxTree
   ) where
 
 import           Control.Arrow (second, (***))
 import           Data.List     (sortOn, span)
-import           Syntax        (Cipher, Symbol (..), SyntaxTree (..))
+import           Lib.Syntax    (Cipher, Symbol (..), SyntaxTree (..))
 
 instance Ord Symbol where
   compare One Zero = GT

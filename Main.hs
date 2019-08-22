@@ -1,18 +1,19 @@
 module Main where
 
-import           Lib
-import qualified Syntax as S
+import           Lib.Huffman
 
 main :: IO ()
 main = do
   input <- getLine
-  printEncoded $ encode input
+  let encoded = encode input
+  printEncoded encoded
+  putStrLn $ uncurry decode encoded
 
 printEncoded
-  :: (Show a)
-  => (S.Code, S.Cipher a) -> IO ()
+  :: (Show b)
+  => (String, b) -> IO ()
 printEncoded (code, cipher) = do
   putStrLn "endoded"
-  putStrLn $ concatMap show code
+  putStrLn code
   putStrLn "cipher"
   print cipher

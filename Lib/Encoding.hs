@@ -1,11 +1,11 @@
-module Encoding
+module Lib.Encoding
   ( encode
   , decode
   ) where
 
-import           Control.Arrow (second)
-import           Occurances    (OccuranceTree (..))
-import           Syntax        (Cipher, Code, Symbol (..), SyntaxTree (..))
+import           Control.Arrow  (second)
+import           Lib.Occurances (OccuranceTree (..))
+import           Lib.Syntax     (Cipher, Code, Symbol (..), SyntaxTree (..))
 
 encode
   :: (Eq a)

@@ -1,29 +1,18 @@
 module Encoding
   ( encode
-  , Code
+  , decode
   ) where
 
 import           Occurances (OccuranceTree (..))
-
-data Symbol
-  = Zero
-  | One
-  deriving (Eq)
-
-instance Show Symbol where
-  show Zero = "0"
-  show One  = "1"
-
-type Code = [Symbol]
-
-type Cipher a = [(a, Code)]
+import           Syntax     (Cipher, Code, Symbol (..), SyntaxTree (..))
 
 encode
   :: (Eq a)
-  => OccuranceTree a -> [a] -> Code
-encode tree = concatMap (translate cipher)
+  => OccuranceTree a -> [a] -> (Code, Cipher a)
+encode tree info = (code, cipher)
   where
     cipher = buildEncoding [] tree
+    code = concatMap (translate cipher) info
 
 buildEncoding :: Code -> OccuranceTree a -> Cipher a
 buildEncoding code (Leaf element _) = [(element, code)]
@@ -40,3 +29,15 @@ translate [] element = error "Can't decipher"
 translate ((encoded, code):xs) element
   | encoded == element = code
   | otherwise = translate xs element
+
+decode :: Code -> SyntaxTree a -> [a]
+decode [] _ = []
+decode code tree = info : decode remainging tree
+  where
+    (remainging, info) = decodeDataPoint code tree
+
+decodeDataPoint :: Code -> SyntaxTree a -> (Code, a)
+decodeDataPoint list (DataPoint info)         = (list, info)
+decodeDataPoint [] (Branch _ _)               = error "Failed to parse"
+decodeDataPoint (Zero:xs) (Branch left right) = decodeDataPoint xs left
+decodeDataPoint (One:xs) (Branch left right)  = decodeDataPoint xs right
